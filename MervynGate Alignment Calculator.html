@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BlinkDrive + Stargate Alignment – By Mervyn Jagels</title>
+<style>
+body { font-family:'Orbitron', sans-serif; background:#0a0e1a; color:#fff; text-align:center; padding:20px; }
+.container { max-width:1000px; margin:auto; background:#111; padding:20px; border-radius:12px; box-shadow:0 0 15px #0ff; }
+h1,h2 { color:#00ffcc; }
+input { width:80%; padding:10px; margin:10px; border:none; border-radius:6px; }
+button { padding:12px 20px; background:#00ffcc; color:#111; font-weight:bold; border:none; border-radius:6px; cursor:pointer; }
+.output { background:#1b1f2a; padding:20px; border-radius:10px; margin-top:20px; text-align:left; }
+img { width:100%; border-radius:10px; margin-top:15px; }
+.manifesto { margin-top:30px; text-align:left; background:#222; padding:20px; border-radius:8px; }
+hr { border:1px solid #333; margin:30px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>BlinkDrive & MervynGate Simulator</h1>
+<p>Author: <strong>Mervyn Jagels</strong></p>
+
+<!-- BlinkDrive Section -->
+<h2>BlinkDrive Jump Calculator</h2>
+<p>Enter craft mass (kg), jump distance (LY), and laser power (MW):</p>
+<input id="mass" type="number" placeholder="Mass (kg)">
+<input id="distance" type="number" placeholder="Distance (light-years)">
+<input id="power" type="number" placeholder="Laser Power (MW)">
+<button onclick="simulate()">Simulate Jump</button>
+<div class="output" id="results"></div>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Spaceship_art.jpg/800px-Spaceship_art.jpg" alt="BlinkDrive Ship">
+
+<hr>
+
+<!-- Stargate Alignment Section -->
+<h2>MervynGate Alignment Calculator</h2>
+<p>Enter star-to-star distance (LY) and laser aperture (m):</p>
+<input id="starDistance" type="number" placeholder="Star Distance (light-years)">
+<input id="aperture" type="number" placeholder="Laser Aperture (meters)">
+<button onclick="stargate()">Calculate Alignment</button>
+<div class="output" id="stargateResults"></div>
+
+<div class="manifesto">
+<h2>BlinkDrive Manifesto</h2>
+<p><strong>Vision:</strong> Humanity’s first quantum-assisted FTL + Stargate system for interstellar travel.</p>
+<ul>
+<li>Hybrid propulsion for solar system navigation</li>
+<li>BlinkDrive quantum-phase jump engine for FTL</li>
+<li>MervynGate Stargates with laser link network</li>
+<li>Goal: Connect stars & make humanity multi-stellar</li>
+</ul>
+<p><em>"Technology belongs to humanity, not corporations."</em></p>
+</div>
+</div>
+
+<script>
+function simulate(){
+ const c = 3e8;
+ const mass = parseFloat(document.getElementById('mass').value);
+ const distLy = parseFloat(document.getElementById('distance').value);
+ const powerMW = parseFloat(document.getElementById('power').value);
+ if(isNaN(mass)||isNaN(distLy)||isNaN(powerMW)){ alert('Enter all values'); return; }
+
+ const speed = 0.1 * c; // 10% light speed
+ const gamma = 1 / Math.sqrt(1 - Math.pow(speed/c,2));
+ const energy = (gamma - 1) * mass * Math.pow(c,2); // J
+ const powerW = powerMW * 1e6;
+ const timeSec = energy / powerW;
+ const days = Math.floor(timeSec / 86400);
+ const hours = Math.floor((timeSec % 86400)/3600);
+ const mins = Math.floor((timeSec % 3600)/60);
+ const prob = Math.min(99.9, 80 + (powerMW/1000000)*10);
+ const distMeters = distLy * 9.461e15;
+
+ document.getElementById('results').innerHTML =
+ `<h3>Simulation Results</h3>
+ <p><strong>Energy Required:</strong> ${(energy/1e15).toFixed(2)} PJ</p>
+ <p><strong>Charging Time:</strong> ${days}d ${hours}h ${mins}m</p>
+ <p><strong>Jump Distance:</strong> ${distMeters.toExponential(2)} m</p>
+ <p><strong>Success Probability:</strong> ${prob.toFixed(1)}%</p>`;
+}
+
+function stargate(){
+ const lyToMeters = 9.461e15;
+ const distanceLY = parseFloat(document.getElementById('starDistance').value);
+ const aperture = parseFloat(document.getElementById('aperture').value);
+ if(isNaN(distanceLY)||isNaN(aperture)){ alert('Enter values'); return; }
+
+ const distanceMeters = distanceLY * lyToMeters;
+ const laserTravelTimeYears = distanceLY; // at c
+ const beamSpread = (1.22 * 500e-9 / aperture) * distanceMeters; // diffraction
+ const alignmentError = (beamSpread / distanceMeters) * 1e9; // in nanoradians
+
+ document.getElementById('stargateResults').innerHTML =
+ `<h3>Stargate Alignment Results</h3>
+ <p><strong>Distance:</strong> ${distanceLY} LY (${distanceMeters.toExponential(2)} m)</p>
+ <p><strong>Laser Travel Time:</strong> ${laserTravelTimeYears.toFixed(2)} years</p>
+ <p><strong>Beam Spread:</strong> ${(beamSpread/1000).toFixed(2)} km</p>
+ <p><strong>Alignment Precision:</strong> ${alignmentError.toFixed(2)} nanoradians</p>`;
+}
+</script>
+</body>
+</html>
